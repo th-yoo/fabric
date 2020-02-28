@@ -1,4 +1,4 @@
-version: '2'
+version: '3'
 
 
 networks:
@@ -9,7 +9,7 @@ networks:
 services:
    ca.fabric.com:
       container_name: ca.fabric.com
-      image: hyperledger/fabric-ca:amd64-1.4.2-snapshot-4289522
+      image: hyperledger/fabric-ca:${IMAGE_TAG}
       command: sh -c 'fabric-ca-server start -d -b rca-orderer-admin:rca-orderer-adminpw --port 7152 --cfg.identities.allowremove'
       environment:
          - FABRIC_CA_SERVER_HOME=/etc/hyperledger/fabric-ca
@@ -21,15 +21,16 @@ services:
          - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca/ca/ca.fabric.com-cert.pem
          - FABRIC_CA_SERVER_DEBUG=true
       volumes:
-         - ../fabca/fabric.com/ca-server:/etc/hyperledger/fabric-ca
-         - ../crypto-config/ordererOrganizations/fabric.com/ca:/etc/hyperledger/fabric-ca/ca
-         - ../scripts:/scripts
+         - ${FABRIC_CFG_PATH}/fabca/fabric.com/ca-server:/etc/hyperledger/fabric-ca
+         - ${FABRIC_CFG_PATH}/crypto-config/ordererOrganizations/fabric.com/ca:/etc/hyperledger/fabric-ca/ca
+         - ${FABRIC_CFG_PATH}/scripts:/scripts
       ports:
          - 7152:7152
+      user: ${CURRENT_USER}
          
    ca.po1.fabric.com:
       container_name: ca.po1.fabric.com
-      image: hyperledger/fabric-ca:amd64-1.4.2-snapshot-4289522
+      image: hyperledger/fabric-ca:${IMAGE_TAG}
       command: sh -c 'fabric-ca-server start -d -b rca-po1-admin:rca-po1-adminpw --port 7153 --cfg.identities.allowremove'
       environment:
          - FABRIC_CA_SERVER_HOME=/etc/hyperledger/fabric-ca
@@ -41,8 +42,9 @@ services:
          - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca/ca/ca.po1.fabric.com-cert.pem
          - FABRIC_CA_SERVER_DEBUG=true
       volumes:
-         - ../fabca/po1.fabric.com/ca-server:/etc/hyperledger/fabric-ca
-         - ../crypto-config/peerOrganizations/po1.fabric.com/ca:/etc/hyperledger/fabric-ca/ca
-         - ../scripts:/scripts
+         - ${FABRIC_CFG_PATH}/fabca/po1.fabric.com/ca-server:/etc/hyperledger/fabric-ca
+         - ${FABRIC_CFG_PATH}/crypto-config/peerOrganizations/po1.fabric.com/ca:/etc/hyperledger/fabric-ca/ca
+         - ${FABRIC_CFG_PATH}/scripts:/scripts
       ports:
          - 7153:7153
+      user: ${CURRENT_USER}

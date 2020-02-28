@@ -1,4 +1,4 @@
-version: '2'
+version: '3'
 
 networks:
   default:
@@ -8,7 +8,7 @@ networks:
 services:
    tlsca.fabric.com:
       container_name: tlsca.fabric.com
-      image: hyperledger/fabric-ca:amd64-1.4.2-snapshot-4289522
+      image: hyperledger/fabric-ca:${IMAGE_TAG}
       command: sh -c 'fabric-ca-server start -d -b tls-ord-admin:tls-ord-adminpw --port 7150 --cfg.identities.allowremove'
       environment:
          - FABRIC_CA_SERVER_HOME=/etc/hyperledger/fabric-ca
@@ -20,15 +20,16 @@ services:
          - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca/tlsca/tlsca.fabric.com-cert.pem
          - FABRIC_CA_SERVER_DEBUG=true
       volumes:
-         - ../fabca/fabric.com/tlsca-server:/etc/hyperledger/fabric-ca
-         - ../crypto-config/ordererOrganizations/fabric.com/tlsca:/etc/hyperledger/fabric-ca/tlsca
-         - ../scripts:/scripts
+         - ${FABRIC_CFG_PATH}/fabca/fabric.com/tlsca-server:/etc/hyperledger/fabric-ca
+         - ${FABRIC_CFG_PATH}/crypto-config/ordererOrganizations/fabric.com/tlsca:/etc/hyperledger/fabric-ca/tlsca
+         - ${FABRIC_CFG_PATH}/scripts:/scripts
       ports:
          - 7150:7150
+      user: ${CURRENT_USER}
          
    tlsca.po1.fabric.com:
       container_name: tlsca.po1.fabric.com
-      image: hyperledger/fabric-ca:amd64-1.4.2-snapshot-4289522
+      image: hyperledger/fabric-ca:${IMAGE_TAG}
       command: sh -c 'fabric-ca-server start -d -b tls-peer-admin:tls-peer-adminpw --port 7151 --cfg.identities.allowremove'
       environment:
          - FABRIC_CA_SERVER_HOME=/etc/hyperledger/fabric-ca
@@ -40,8 +41,9 @@ services:
          - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca/tlsca/tlsca.po1.fabric.com-cert.pem
          - FABRIC_CA_SERVER_DEBUG=true
       volumes:
-         - ../fabca/po1.fabric.com/tlsca-server:/etc/hyperledger/fabric-ca
-         - ../crypto-config/peerOrganizations/po1.fabric.com/tlsca:/etc/hyperledger/fabric-ca/tlsca
-         - ../scripts:/scripts
+         - ${FABRIC_CFG_PATH}/fabca/po1.fabric.com/tlsca-server:/etc/hyperledger/fabric-ca
+         - ${FABRIC_CFG_PATH}/crypto-config/peerOrganizations/po1.fabric.com/tlsca:/etc/hyperledger/fabric-ca/tlsca
+         - ${FABRIC_CFG_PATH}/scripts:/scripts
       ports:
          - 7151:7151
+      user: ${CURRENT_USER}
